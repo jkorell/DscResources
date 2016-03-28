@@ -21,6 +21,8 @@ For more information, learn about our [branch structure](#branch-structure).
 
 ![Github-PR-dev.png](Images/Github-PR-dev.png)
 
+* Add meaningful title of the PR describing what change you want to check in. Don't simply put: "Fixes issue #5". Better example is: "Added Ensure parameter to xFile resource. Fixes #5". 
+
 * When you create a pull request, fill out the description with a summary of what's included in your changes. 
 If the changes are related to an existing GitHub issue, please reference the issue in pull request title or description (e.g. ```Closes #11```). See [this](https://help.github.com/articles/closing-issues-via-commit-messages/) for more details.
 
@@ -32,6 +34,16 @@ If the changes are related to an existing GitHub issue, please reference the iss
     
     -  Added support for `-FriendlyName` in `Update-xDscResource`.
     ```
+    Please use past tense when describing your changes: 
+    
+      * Instead of "Adding support for Windows Server 2012 R2", write "Added support for Windows Server 2012 R2".
+    
+      * Instead of "Fix for server connection issue", write "Fixed server connection issue".
+    
+    Also, if change is related to specific resource, please prefix the description with the resource name:
+    
+      * Instead of "New parameter 'ConnectionCredential' in xMySqlDatabase resource", write "xMySqlDatabase: added parameter 'ConnectionCredential'"
+    
 * If this is your first contribution to DscResources, you may be asked to sign a [Contribution Licensing Agreement](https://cla.microsoft.com/) (CLA) before your changes will be accepted.
 * After submitting your pull request, our CI system (Appveyor) [will run a suite of tests](#appveyor) and automatically update the status of the pull request.
 * After a successful test pass, the module's maintainers will do a code review, commenting on any changes that might need to be made. If you are not designated as a module's maintainer, feel free to review others' Pull Requests as well, additional feedback is always welcome (leave your comments even if everything looks good - simple "Looks good to me" or "LGTM" will suffice, so that we know someone has already taken a look at it)! 
@@ -87,7 +99,7 @@ Multiple element lists work the same way as with ordered lists.
 * **Links:** The syntax for a hyperlink is `[visible link text](link url)`.
 Links can also have references, which will be discussed in the "Link and Image References" section below.
 
-### Improving test coverage for existing resources
+### Adding test coverage for DSC resources
 
 All DSC modules in the DscResources should have tests written using [Pester](https://github.com/pester/Pester) included in a Tests folder.
 It is required that you provide adequate coverage for the code you change.  The following projects have tests which you can use as examples:
@@ -117,6 +129,7 @@ If you would like to add a DSC resource:
     - Write documentation using GitHub Flavored Markdown 
     - Write (or alter) an example configuration in the Examples subdirectory demonstrating how your resource should be used
     - DO NOT change the *.psd1 ModuleVersion (we will be updating this before releasing to the Gallery)
+    - DO NOT change the *.schema.mof ClassVersion. (If this ever needs updating, we will be updating before releasing to the Gallery.)
 
 
 ## Contributing a new DSC resource module
@@ -132,11 +145,10 @@ If none of the existing issues look related, [open a new issue](https://github.c
 
 Next, develop your DSC resources in your own module repository. Make sure you:
 
-* Write a set of test cases specific to your resources using Pester. 
-Place them in a `Tests` directory. ([See details regarding test folder structure](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md#improving-test-coverage-for-existing-resources))
+* Write a set of Unit and Integration test cases specific to your resources using Pester using the test templates from the [Tests.Template folder](Tests.Template).
+Place them in `Tests\Unit` and `Tests\Integration` directories. ([See details regarding adding tests](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md#adding-test-coverage-for-dsc-resources))
 * Use the template from the [DscResource.Template folder](DscResource.Template) as a boilerplate for [appveyor.yml] (https://github.com/PowerShell/DscResources/blob/master/DscResource.Template/appveyor.yml) (continuous integration configuration file) and [README.md](https://github.com/PowerShell/DscResources/blob/master/DscResource.Template/README.md).
-
-* Run all common tests located in [DSCResource.Tests](https://github.com/PowerShell/DscResource.Tests) 
+* When you run tests based on the templates the common tests located in [DSCResource.Tests](https://github.com/PowerShell/DscResource.Tests) will be automatically installed into the root folder of your module when your tests are run. 
 
 Follow up in the issue you opened to discuss repo ownership with the PowerShell team.
 There are two options:
@@ -144,9 +156,9 @@ There are two options:
 This means we will have full control and permissions to the module repository.
 In the future, you will have to fork and submit pull requests to commit changes as if it were any other submodule in [DscResources](https://github.com/PowerShell/DscResources).
 ![Transfer-Ownership](Images/GitHub-Transfer-Ownership.png)
-* Allow the PowerShell organization to fork your repository and use that fork as a submodule of [DscResources](https://github.com/DscResources).
+* Contact the PowerShell organization (e.g. by opening issue under DscResources) and ask us to fork your repository and use that fork as a submodule of [DscResources](https://github.com/DscResources).
 This means that you can continue to operate as you wish on your own branch of the module.
-However, you should still submit pull requests to our fork in order to take your changes into the "official" version of the module. 
+However, you should still submit pull requests to our fork in order to take your changes into the "official" version of the module. We will request you to add note to your readme.md that the official development should be happening in our fork.
 
 ## AppVeyor
 
@@ -177,9 +189,14 @@ Make sure to run these tests before submitting a pull request.
 [DSCResource.Tests](https://github.com/PowerShell/DscResource.Tests) contains **Fixers** where it's possible.
 I.e. you can use [MetaFixers](https://github.com/PowerShell/DscResource.Tests/blob/master/MetaFixers.psm1) to convert all indentations and file encodings.
 
-### Run common tests locally
+### Test Templates
+We have provided a set of test templates for you to use to create new tests. There is single file for unit tests and two for integration tests. These test templates are availabing in the [Tests.Template folder](Tests.Template).
+For instructions on how to use these templates, please read the [Tests Guidlines Document](TestsGuidelines.md).
 
-To run these common tests on your machine, you should clone [DSCResource.Tests](https://github.com/PowerShell/DscResource.Tests) to resource directory that you want to test.
+### Run common tests locally
+If you have created your tests using the [Tests.Template](Tests.Template) files then the [DSCResource.Tests](https://github.com/PowerShell/DscResource.Tests) will automatically be downloaded into the module folder when the tests are invoked.
+
+If you did not use the [Tests.Template](Tests.Template) to create your tests then you will need to run these common tests on your machine, you should clone [DSCResource.Tests](https://github.com/PowerShell/DscResource.Tests) to resource directory that you want to test.
 Then run `Invoke-Pester` from root.
 
 ```

@@ -1,5 +1,9 @@
 # DSC Resource Style Guidelines
 
+In order to provide clean and consistent code, please follow the coding conventions listed below when contributing to this repository and all [DSC Resource Kit repositories](https://github.com/PowerShell/DscResources/tree/master/xDscResources).
+
+For general PowerShell best practices, please refer to [PowerShell Best Practices](https://github.com/PowerShell/PSScriptAnalyzer/blob/development/PowerShellBestPractices.md) document.
+
 General Rules
 ----------------
 
@@ -7,7 +11,7 @@ General Rules
  2. Make sure all files are encoding using UTF-8. 
  3. Windows handles [newlines](http://en.wikipedia.org/wiki/Newline) using CR+LF instead of just CR. 
 For interoperability reasons, we recommend that you follow [these instructions](GettingStartedWithGitHub.md#setup-git) when installing Git on Windows so that newlines saved to GitHub are simply CRs. 
- 4. When writing Markdown, if a paragraph includes more than one setence, end each sentence with a newline.
+ 4. When writing Markdown, if a paragraph includes more than one sentence, end each sentence with a newline.
 GitHub will still render the sentences as a single paragraph, but the readability of `git diff` will be greatly improved. 
  5. Files must end with a newline, see [StackOverflow.](http://stackoverflow.com/questions/5813311/no-newline-at-end-of-file) 
 
@@ -129,6 +133,35 @@ function Get-TargetResource
 }
 ```
 
+Parameter names should use PascalCase 
+-------------------------------------------------------------
+
+**Bad:**
+```powershell
+function Get-TargetResource
+{
+    ...
+     param
+     (
+         ...
+         $SOURCEPATH
+         ...
+}
+```
+
+**Good:**
+```powershell
+function Get-TargetResource
+{
+    [CmdletBinding()]
+     param
+     (
+         ...
+         $SourcePath
+         ...
+}
+```
+
 Variable names should use camelCase
 -------------------------------------------------------------
 
@@ -197,4 +230,19 @@ function New-EtwEvent
     )
     # Implementation
  }
+```
+
+Call cmdlets using all named parameters instead of positional parameters
+------------------------------------------------------------------------
+
+**Bad:**
+```powershell
+Get-Childitem c:\documents *.md
+```
+
+The above code breaks this rule using by calling ```Get-ChildItem``` passing positional parameters instead of named parameters.
+
+**Good:**
+```powershell
+Get-ChildItem -Path c:\documents -filer *.md
 ```

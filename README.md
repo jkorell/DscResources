@@ -38,7 +38,7 @@ e.g.:
 
 [http://www.powershellgallery.com/packages/xWebAdministration](http://www.powershellgallery.com/packages/xWebAdministration)
 
-Of course, you can always use PowerShellGet (available in [WMF 5.0](http://www.microsoft.com/en-us/download/details.aspx?id=44987)) as well:
+Of course, you can always use PowerShellGet (available in [WMF 5.0](http://go.microsoft.com/fwlink/?LinkID=398175)) as well:
 
 ```
 Find-DscResource
@@ -109,4 +109,4 @@ See our [guidelines for DSC resource maintainers](Maintainers.md).
 
 ## Dashboard
 
-You can see dashboard of all open issues and pull requests acrross DSC Resource here: [![Stories in Ready](https://badge.waffle.io/powershell/dscresources.png?label=ready&title=Ready)](https://waffle.io/powershell/dscresources) 
+You can see dashboard of all open issues and pull requests across DSC Resource here: [![Stories in Ready](https://badge.waffle.io/powershell/dscresources.png?label=ready&title=Ready)](https://waffle.io/powershell/dscresources) 
